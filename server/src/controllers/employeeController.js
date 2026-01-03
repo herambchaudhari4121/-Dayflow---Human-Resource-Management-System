@@ -122,7 +122,7 @@ const updateEmployee = async (req, res) => {
       return res.status(404).json({ message: "Employee not found" });
     }
 
-    // Update fields
+    // Update basic fields
     const allowedUpdates = [
       "name",
       "phone",
@@ -130,12 +130,79 @@ const updateEmployee = async (req, res) => {
       "designation",
       "department",
       "dateOfBirth",
+      "nationality",
+      "gender",
+      "maritalStatus",
+      "personalEmail",
     ];
+
     allowedUpdates.forEach((field) => {
-      if (req.body[field]) {
+      if (req.body[field] !== undefined) {
         employee[field] = req.body[field];
       }
     });
+
+    // Update bank details if provided
+    if (req.body.bankDetails) {
+      employee.bankDetails = {
+        accountNumber:
+          req.body.bankDetails.accountNumber ||
+          employee.bankDetails?.accountNumber ||
+          "",
+        bankName:
+          req.body.bankDetails.bankName || employee.bankDetails?.bankName || "",
+        ifscCode:
+          req.body.bankDetails.ifscCode || employee.bankDetails?.ifscCode || "",
+        panNumber:
+          req.body.bankDetails.panNumber ||
+          employee.bankDetails?.panNumber ||
+          "",
+        uanNumber:
+          req.body.bankDetails.uanNumber ||
+          employee.bankDetails?.uanNumber ||
+          "",
+        empCode:
+          req.body.bankDetails.empCode || employee.bankDetails?.empCode || "",
+      };
+    }
+
+    // Update company info if provided
+    if (req.body.companyInfo) {
+      employee.companyInfo = {
+        company:
+          req.body.companyInfo.company || employee.companyInfo?.company || "",
+        department:
+          req.body.companyInfo.department ||
+          employee.companyInfo?.department ||
+          "",
+        manager:
+          req.body.companyInfo.manager || employee.companyInfo?.manager || "",
+        location:
+          req.body.companyInfo.location || employee.companyInfo?.location || "",
+      };
+    }
+
+    // Update salary structure if provided (Admin only)
+    if (req.body.salaryStructure) {
+      employee.salaryStructure = {
+        wageType:
+          req.body.salaryStructure.wageType ||
+          employee.salaryStructure?.wageType ||
+          "fixed",
+        monthlyWage:
+          req.body.salaryStructure.monthlyWage ||
+          employee.salaryStructure?.monthlyWage ||
+          0,
+        yearlyWage:
+          req.body.salaryStructure.yearlyWage ||
+          employee.salaryStructure?.yearlyWage ||
+          0,
+        components:
+          req.body.salaryStructure.components ||
+          employee.salaryStructure?.components ||
+          [],
+      };
+    }
 
     await employee.save();
 

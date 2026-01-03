@@ -132,6 +132,44 @@ const userSchema = new mongoose.Schema(
     profilePicture: {
       type: String,
     },
+
+    // Private Info
+    nationality: {
+      type: String,
+      trim: true,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other", ""],
+      default: "",
+    },
+    maritalStatus: {
+      type: String,
+      enum: ["single", "married", "divorced", "widowed", ""],
+      default: "",
+    },
+    personalEmail: {
+      type: String,
+      trim: true,
+    },
+
+    // Bank Details
+    bankDetails: {
+      accountNumber: { type: String, trim: true },
+      bankName: { type: String, trim: true },
+      ifscCode: { type: String, trim: true },
+      panNumber: { type: String, trim: true },
+      uanNumber: { type: String, trim: true },
+      empCode: { type: String, trim: true },
+    },
+
+    // Company Info
+    companyInfo: {
+      company: { type: String, trim: true },
+      department: { type: String, trim: true },
+      manager: { type: String, trim: true },
+      location: { type: String, trim: true },
+    },
   },
   {
     timestamps: true,

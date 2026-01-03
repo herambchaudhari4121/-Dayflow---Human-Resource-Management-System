@@ -829,179 +829,296 @@ const EmployeeProfile = () => {
                       monthly wage.
                     </p>
 
-                    <div className="space-y-3">
-                      {formData.salaryComponents.map((component, index) => (
-                        <div
-                          key={index}
-                          className={`p-4 rounded-md border-2 ${
-                            component.type === "allowance"
-                              ? "bg-green-50 border-green-200"
-                              : "bg-red-50 border-red-200"
-                          }`}
-                        >
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                            {/* Component Name */}
-                            <div className="md:col-span-3">
-                              <label className="block text-xs font-medium text-gray-700 mb-1">
-                                Component Name
-                              </label>
-                              {isEditing ? (
-                                <input
-                                  type="text"
-                                  value={component.name}
-                                  onChange={(e) =>
-                                    handleComponentChange(
-                                      index,
-                                      "name",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                />
-                              ) : (
-                                <p className="px-3 py-2 bg-white rounded-md text-sm font-medium">
-                                  {component.name}
-                                </p>
-                              )}
-                            </div>
+                    {formData.salaryComponents.length === 0 ? (
+                      <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                        <p className="text-gray-500 mb-2">
+                          No salary components added yet
+                        </p>
+                        {isEditing && (
+                          <p className="text-sm text-gray-400">
+                            Click "Add Component" to add allowances or
+                            deductions
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {formData.salaryComponents.map((component, index) => (
+                          <div
+                            key={index}
+                            className={`p-4 rounded-md border-2 ${
+                              component.type === "allowance"
+                                ? "bg-green-50 border-green-200"
+                                : "bg-red-50 border-red-200"
+                            }`}
+                          >
+                            {isEditing ? (
+                              // EDIT MODE: Full detailed form
+                              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                                {/* Component Name */}
+                                <div className="md:col-span-3">
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                    Component Name
+                                  </label>
+                                  {isEditing ? (
+                                    <input
+                                      type="text"
+                                      value={component.name}
+                                      onChange={(e) =>
+                                        handleComponentChange(
+                                          index,
+                                          "name",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    />
+                                  ) : (
+                                    <p className="px-3 py-2 bg-white rounded-md text-sm font-medium">
+                                      {component.name}
+                                    </p>
+                                  )}
+                                </div>
 
-                            {/* Type */}
-                            <div className="md:col-span-2">
-                              <label className="block text-xs font-medium text-gray-700 mb-1">
-                                Type
-                              </label>
-                              {isEditing ? (
-                                <select
-                                  value={component.type}
-                                  onChange={(e) =>
-                                    handleComponentChange(
-                                      index,
-                                      "type",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                >
-                                  <option value="allowance">Allowance</option>
-                                  <option value="deduction">Deduction</option>
-                                </select>
-                              ) : (
-                                <p
-                                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                                    component.type === "allowance"
-                                      ? "bg-green-100 text-green-800"
-                                      : "bg-red-100 text-red-800"
-                                  }`}
-                                >
-                                  {component.type === "allowance"
-                                    ? "+ Allowance"
-                                    : "- Deduction"}
-                                </p>
-                              )}
-                            </div>
+                                {/* Type */}
+                                <div className="md:col-span-2">
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                    Type
+                                  </label>
+                                  {isEditing ? (
+                                    <select
+                                      value={component.type}
+                                      onChange={(e) =>
+                                        handleComponentChange(
+                                          index,
+                                          "type",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    >
+                                      <option value="allowance">
+                                        Allowance
+                                      </option>
+                                      <option value="deduction">
+                                        Deduction
+                                      </option>
+                                    </select>
+                                  ) : (
+                                    <p
+                                      className={`px-3 py-2 rounded-md text-sm font-medium ${
+                                        component.type === "allowance"
+                                          ? "bg-green-100 text-green-800"
+                                          : "bg-red-100 text-red-800"
+                                      }`}
+                                    >
+                                      {component.type === "allowance"
+                                        ? "+ Allowance"
+                                        : "- Deduction"}
+                                    </p>
+                                  )}
+                                </div>
 
-                            {/* Calculation Type */}
-                            <div className="md:col-span-2">
-                              <label className="block text-xs font-medium text-gray-700 mb-1">
-                                Calculation
-                              </label>
-                              {isEditing ? (
-                                <select
-                                  value={component.calculationType}
-                                  onChange={(e) =>
-                                    handleComponentChange(
-                                      index,
-                                      "calculationType",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                >
-                                  <option value="percentage">% of Wage</option>
-                                  <option value="fixed">Fixed Amount</option>
-                                </select>
-                              ) : (
-                                <p className="px-3 py-2 bg-white rounded-md text-sm">
-                                  {component.calculationType === "percentage"
-                                    ? "% of Wage"
-                                    : "Fixed"}
-                                </p>
-                              )}
-                            </div>
+                                {/* Calculation Type */}
+                                <div className="md:col-span-2">
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                    Calculation
+                                  </label>
+                                  {isEditing ? (
+                                    <select
+                                      value={component.calculationType}
+                                      onChange={(e) =>
+                                        handleComponentChange(
+                                          index,
+                                          "calculationType",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    >
+                                      <option value="percentage">
+                                        % of Wage
+                                      </option>
+                                      <option value="fixed">
+                                        Fixed Amount
+                                      </option>
+                                    </select>
+                                  ) : (
+                                    <p className="px-3 py-2 bg-white rounded-md text-sm">
+                                      {component.calculationType ===
+                                      "percentage"
+                                        ? "% of Wage"
+                                        : "Fixed"}
+                                    </p>
+                                  )}
+                                </div>
 
-                            {/* Value */}
-                            <div className="md:col-span-2">
-                              <label className="block text-xs font-medium text-gray-700 mb-1">
-                                {component.calculationType === "percentage"
-                                  ? "Percentage (%)"
-                                  : "Amount (₹)"}
-                              </label>
-                              {isEditing ? (
-                                <input
-                                  type="number"
-                                  value={component.value}
-                                  onChange={(e) =>
-                                    handleComponentChange(
-                                      index,
-                                      "value",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                  placeholder={
-                                    component.calculationType === "percentage"
-                                      ? "10"
-                                      : "5000"
-                                  }
-                                />
-                              ) : (
-                                <p className="px-3 py-2 bg-white rounded-md text-sm font-semibold">
-                                  {component.calculationType === "percentage"
-                                    ? `${component.value}%`
-                                    : `₹${component.value}`}
-                                </p>
-                              )}
-                            </div>
+                                {/* Value */}
+                                <div className="md:col-span-2">
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                    {component.calculationType === "percentage"
+                                      ? "Percentage (%)"
+                                      : "Amount (₹)"}
+                                  </label>
+                                  {isEditing ? (
+                                    <input
+                                      type="number"
+                                      value={component.value}
+                                      onChange={(e) =>
+                                        handleComponentChange(
+                                          index,
+                                          "value",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                      placeholder={
+                                        component.calculationType ===
+                                        "percentage"
+                                          ? "10"
+                                          : "5000"
+                                      }
+                                    />
+                                  ) : (
+                                    <p className="px-3 py-2 bg-white rounded-md text-sm font-semibold">
+                                      {component.calculationType ===
+                                      "percentage"
+                                        ? `${component.value}%`
+                                        : `₹${component.value}`}
+                                    </p>
+                                  )}
+                                </div>
 
-                            {/* Calculated Amount */}
-                            <div className="md:col-span-2">
-                              <label className="block text-xs font-medium text-gray-700 mb-1">
-                                Monthly Amount
-                              </label>
-                              <p className="px-3 py-2 bg-purple-100 rounded-md text-sm font-bold text-purple-700">
-                                ₹
-                                {parseFloat(
-                                  component.amount || 0
-                                ).toLocaleString()}
-                              </p>
-                            </div>
+                                {/* Calculated Amount */}
+                                <div className="md:col-span-2">
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                    Monthly Amount
+                                  </label>
+                                  <p className="px-3 py-2 bg-purple-100 rounded-md text-sm font-bold text-purple-700">
+                                    ₹
+                                    {parseFloat(
+                                      component.amount || 0
+                                    ).toLocaleString()}
+                                  </p>
+                                </div>
 
-                            {/* Remove Button */}
-                            {isEditing && (
-                              <div className="md:col-span-1">
-                                <button
-                                  onClick={() => removeSalaryComponent(index)}
-                                  className="w-full bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md text-sm"
-                                  title="Remove component"
-                                >
-                                  🗑️
-                                </button>
+                                {/* Remove Button */}
+                                {isEditing && (
+                                  <div className="md:col-span-1">
+                                    <button
+                                      onClick={() =>
+                                        removeSalaryComponent(index)
+                                      }
+                                      className="w-full bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md text-sm"
+                                      title="Remove component"
+                                    >
+                                      🗑️
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* View Mode: Show component summary in single row */}
+                                {!isEditing && (
+                                  <div className="md:col-span-12 mt-2 pt-2 border-t border-gray-200">
+                                    <div className="flex justify-between items-center text-sm">
+                                      <span className="text-gray-600">
+                                        {component.calculationType ===
+                                        "percentage"
+                                          ? `${
+                                              component.value
+                                            }% of ₹${parseFloat(
+                                              formData.monthlyWage || 0
+                                            ).toLocaleString()}`
+                                          : `Fixed amount`}
+                                      </span>
+                                      <span
+                                        className={`font-semibold ${
+                                          component.type === "allowance"
+                                            ? "text-green-600"
+                                            : "text-red-600"
+                                        }`}
+                                      >
+                                        {component.type === "allowance"
+                                          ? "+"
+                                          : "-"}
+                                        ₹
+                                        {parseFloat(
+                                          component.amount || 0
+                                        ).toLocaleString()}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              // VIEW MODE: Compact summary display
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <p className="font-semibold text-gray-800 text-lg">
+                                    {component.name}
+                                  </p>
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    {component.calculationType === "percentage"
+                                      ? `${component.value}% of base wage`
+                                      : `Fixed: ₹${parseFloat(
+                                          component.value || 0
+                                        ).toLocaleString()}`}
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  <p
+                                    className={`text-2xl font-bold ${
+                                      component.type === "allowance"
+                                        ? "text-green-600"
+                                        : "text-red-600"
+                                    }`}
+                                  >
+                                    {component.type === "allowance" ? "+" : "-"}
+                                    ₹
+                                    {parseFloat(
+                                      component.amount || 0
+                                    ).toLocaleString()}
+                                  </p>
+                                  <p
+                                    className={`text-xs mt-1 ${
+                                      component.type === "allowance"
+                                        ? "text-green-700"
+                                        : "text-red-700"
+                                    }`}
+                                  >
+                                    {component.type === "allowance"
+                                      ? "Allowance"
+                                      : "Deduction"}
+                                  </p>
+                                </div>
                               </div>
                             )}
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Total Salary Calculation */}
                   <div className="border-t pt-6 mt-6">
                     <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg shadow-md">
                       <h4 className="text-lg font-bold text-gray-800 mb-4">
-                        Salary Summary
+                        💰 Salary Summary
                       </h4>
 
                       <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2">
+                          <span className="text-gray-700 font-medium">
+                            Base Monthly Wage:
+                          </span>
+                          <span className="font-semibold text-blue-600">
+                            ₹
+                            {parseFloat(
+                              formData.monthlyWage || 0
+                            ).toLocaleString()}
+                          </span>
+                        </div>
+
                         <div className="flex justify-between items-center border-b pb-2">
                           <span className="text-gray-700">
                             Total Allowances:
@@ -1034,20 +1151,20 @@ const EmployeeProfile = () => {
                           </span>
                         </div>
 
-                        <div className="flex justify-between items-center pt-3">
+                        <div className="flex justify-between items-center pt-3 bg-white rounded-lg p-4 shadow-sm">
                           <span className="text-xl font-bold text-gray-800">
-                            Net Monthly Salary:
+                            💵 Net Monthly Salary:
                           </span>
                           <span className="text-3xl font-bold text-purple-600">
                             ₹{calculateTotalSalary().toLocaleString()}
                           </span>
                         </div>
 
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">
-                            Net Yearly Salary:
+                        <div className="flex justify-between items-center bg-white rounded-lg p-3 shadow-sm">
+                          <span className="text-base font-semibold text-gray-700">
+                            📅 Net Yearly Salary:
                           </span>
-                          <span className="text-lg font-semibold text-gray-800">
+                          <span className="text-2xl font-bold text-purple-600">
                             ₹{(calculateTotalSalary() * 12).toLocaleString()}
                           </span>
                         </div>
