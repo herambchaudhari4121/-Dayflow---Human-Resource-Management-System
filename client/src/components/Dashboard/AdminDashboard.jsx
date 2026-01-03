@@ -25,6 +25,12 @@ const AdminDashboard = () => {
               Manage Employees
             </button>
             <button
+              onClick={() => navigate("/attendance")}
+              className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md"
+            >
+              Attendance
+            </button>
+            <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
             >
@@ -41,33 +47,39 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Employees</h3>
+          <div
+            onClick={() => navigate("/employees")}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <h3 className="text-xl font-semibold mb-2">👥 Employees</h3>
             <p className="text-gray-600">Manage all employees</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Attendance</h3>
+          <div
+            onClick={() => navigate("/attendance")}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <h3 className="text-xl font-semibold mb-2">📋 Attendance</h3>
             <p className="text-gray-600">View all attendance records</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Leave Approvals</h3>
+          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <h3 className="text-xl font-semibold mb-2">🏖️ Leave Approvals</h3>
             <p className="text-gray-600">Approve/reject leave requests</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Payroll</h3>
+          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <h3 className="text-xl font-semibold mb-2">💰 Payroll</h3>
             <p className="text-gray-600">Manage payroll and salary</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Reports</h3>
+          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <h3 className="text-xl font-semibold mb-2">📊 Reports</h3>
             <p className="text-gray-600">Generate and view reports</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Settings</h3>
+          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <h3 className="text-xl font-semibold mb-2">⚙️ Settings</h3>
             <p className="text-gray-600">System configuration</p>
           </div>
         </div>

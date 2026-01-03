@@ -23,6 +23,12 @@ const EmployeeDashboard = () => {
               View Employees
             </button>
             <button
+              onClick={() => navigate("/attendance")}
+              className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md"
+            >
+              My Attendance
+            </button>
+            <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
             >
@@ -39,18 +45,24 @@ const EmployeeDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Profile</h3>
+          <div
+            onClick={() => navigate("/profile")}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <h3 className="text-xl font-semibold mb-2">👤 Profile</h3>
             <p className="text-gray-600">View and edit your profile</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Attendance</h3>
-            <p className="text-gray-600">Check-in/Check-out</p>
+          <div
+            onClick={() => navigate("/attendance")}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <h3 className="text-xl font-semibold mb-2">📋 Attendance</h3>
+            <p className="text-gray-600">Check-in/Check-out & View History</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Leave Requests</h3>
+          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <h3 className="text-xl font-semibold mb-2">🏖️ Leave Requests</h3>
             <p className="text-gray-600">Apply for leave</p>
           </div>
         </div>

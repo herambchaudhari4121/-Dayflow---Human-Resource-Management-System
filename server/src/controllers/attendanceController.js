@@ -148,17 +148,35 @@ const getAttendanceHistory = async (req, res) => {
 // @access  Private (Admin/HR)
 const getAllAttendance = async (req, res) => {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const { date } = req.query;
+
+    let startDate, endDate;
+
+    if (date) {
+      // If specific date is provided, get attendance for that day
+      startDate = new Date(date);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(date);
+      endDate.setHours(23, 59, 59, 999);
+    } else {
+      // Default to today
+      startDate = new Date();
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date();
+      endDate.setHours(23, 59, 59, 999);
+    }
 
     const attendanceRecords = await Attendance.find({
-      date: { $gte: today },
-    }).populate("employee", "name email employeeId");
+      date: { $gte: startDate, $lte: endDate },
+    })
+      .populate("employee", "name email employeeId")
+      .sort({ checkInTime: -1 });
 
     res.json({
       success: true,
       count: attendanceRecords.length,
       attendance: attendanceRecords,
+      date: startDate.toISOString().split("T")[0],
     });
   } catch (error) {
     console.error("Get all attendance error:", error);
