@@ -67,6 +67,16 @@ const AdminDashboard = () => {
               Payroll
             </button>
             <button
+              onClick={(e) => {
+                e.preventDefault();
+                console.log("Navigating to /reports");
+                navigate("/reports");
+              }}
+              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md"
+            >
+              Reports
+            </button>
+            <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
             >
@@ -115,15 +125,17 @@ const AdminDashboard = () => {
             <p className="text-gray-600">Manage payroll and salary</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
+          <div
+            onClick={() => navigate("/reports")}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
             <h3 className="text-xl font-semibold mb-2">📊 Reports</h3>
             <p className="text-gray-600">Generate and view reports</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <h3 className="text-xl font-semibold mb-2">⚙️ Settings</h3>
-            <p className="text-gray-600">System configuration</p>
-          </div>
+         
+
+         
         </div>
       </div>
     </div>
