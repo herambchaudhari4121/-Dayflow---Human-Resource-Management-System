@@ -96,9 +96,7 @@ const SignUp = () => {
       <div className="auth-card max-w-lg">
         {/* Logo */}
         <div className="flex justify-center mb-4">
-          <div className="bg-gray-200 px-8 py-4 rounded-md">
-            <span className="text-gray-600 font-semibold">App/Web Logo</span>
-          </div>
+          <img src="/logo (2).png" alt="DayFlow Logo" className="h-20 w-auto" />
         </div>
 
         {/* Title */}

@@ -27,7 +27,8 @@ const leaveSchema = new mongoose.Schema(
     },
     reason: {
       type: String,
-      required: true,
+      required: false,
+      default: "No reason provided",
     },
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,7 +42,7 @@ const leaveSchema = new mongoose.Schema(
     },
     daysCount: {
       type: Number,
-      required: true,
+      default: 0,
     },
   },
   {
@@ -54,12 +55,11 @@ leaveSchema.index({ employee: 1, startDate: 1 });
 leaveSchema.index({ status: 1 });
 
 // Calculate number of days
-leaveSchema.pre("save", function (next) {
+leaveSchema.pre("save", function () {
   if (this.startDate && this.endDate) {
     const diffTime = Math.abs(this.endDate - this.startDate);
     this.daysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
   }
-  next();
 });
 
 module.exports = mongoose.model("Leave", leaveSchema);

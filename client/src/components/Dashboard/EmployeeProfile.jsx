@@ -295,6 +295,12 @@ const EmployeeProfile = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
+              <img
+                src="/logo (2).png"
+                alt="DayFlow Logo"
+                className="h-10 w-auto cursor-pointer"
+                onClick={() => navigate("/admin/dashboard")}
+              />
               <button
                 onClick={() => navigate(-1)}
                 className="text-gray-600 hover:text-gray-800"
@@ -306,10 +312,28 @@ const EmployeeProfile = () => {
               </h1>
             </div>
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/employees")}
+                className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors"
+              >
+                Employees
+              </button>
+              <button
+                onClick={() => navigate("/attendance")}
+                className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+              >
+                Attendance
+              </button>
+              <button
+                onClick={() => navigate("/timeoff")}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+              >
+                Time Off
+              </button>
               {!isEditing ? (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
                 >
                   <span>✏️</span> Edit
                 </button>

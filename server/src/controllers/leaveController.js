@@ -8,9 +8,9 @@ const createLeaveRequest = async (req, res) => {
   try {
     const { startDate, endDate, leaveType, reason } = req.body;
 
-    if (!startDate || !endDate || !leaveType || !reason) {
+    if (!startDate || !endDate || !leaveType) {
       return res.status(400).json({
-        message: "Please provide all required fields",
+        message: "Please provide start date, end date, and leave type",
       });
     }
 
@@ -19,7 +19,7 @@ const createLeaveRequest = async (req, res) => {
       startDate,
       endDate,
       leaveType,
-      reason,
+      reason: reason || "No reason provided",
     });
 
     res.status(201).json({

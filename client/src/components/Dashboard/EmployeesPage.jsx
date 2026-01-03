@@ -173,12 +173,33 @@ const EmployeesPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="bg-gray-200 px-6 py-2 rounded-md mr-6">
-                <span className="text-gray-600 font-semibold">
-                  Company Logo
-                </span>
+              <div
+                className="mr-6 flex items-center cursor-pointer"
+                onClick={() => navigate("/admin/dashboard")}
+              >
+                <img
+                  src="/logo (2).png"
+                  alt="DayFlow Logo"
+                  className="h-10 w-auto"
+                />
               </div>
               <h1 className="text-xl font-bold text-gray-800">DayFlow HRMS</h1>
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/attendance")}
+                className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+              >
+                Attendance
+              </button>
+              <button
+                onClick={() => navigate("/timeoff")}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+              >
+                Time Off
+              </button>
             </div>
 
             {/* Profile Section */}
@@ -212,6 +233,24 @@ const EmployeesPage = () => {
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     My Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      navigate("/attendance");
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Attendance
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      navigate("/timeoff");
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Time Off
                   </button>
                   <button
                     onClick={() => {

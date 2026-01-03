@@ -14,7 +14,15 @@ const EmployeeDashboard = () => {
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-md p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">DayFlow HRMS</h1>
+          <div className="flex items-center gap-4">
+            <img
+              src="/logo (2).png"
+              alt="DayFlow Logo"
+              className="h-10 w-auto cursor-pointer"
+              onClick={() => navigate("/admin/dashboard")}
+            />
+            <h1 className="text-2xl font-bold text-gray-800">DayFlow HRMS</h1>
+          </div>
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/employees")}

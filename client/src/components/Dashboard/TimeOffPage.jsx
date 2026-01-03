@@ -50,14 +50,17 @@ const TimeOffPage = () => {
           "http://localhost:5000/api/leaves/my-leaves",
           config
         );
+        console.log("Employee leaves response:", response.data);
         if (response.data.statistics) {
           setStatistics(response.data.statistics);
         }
       }
 
       setLeaves(response.data.leaves || []);
+      console.log("Leaves set:", response.data.leaves);
     } catch (error) {
       console.error("Error fetching leaves:", error);
+      console.error("Error response:", error.response);
       alert(error.response?.data?.message || "Failed to fetch leave requests");
     } finally {
       setLoading(false);
@@ -103,8 +106,8 @@ const TimeOffPage = () => {
   const handleSubmitLeave = async (e) => {
     e.preventDefault();
 
-    if (!newLeave.startDate || !newLeave.endDate || !newLeave.reason) {
-      alert("Please fill in all fields");
+    if (!newLeave.startDate || !newLeave.endDate) {
+      alert("Please select start date and end date");
       return;
     }
 
@@ -193,13 +196,29 @@ const TimeOffPage = () => {
 
   // Get status badge color
   const getStatusColor = (status) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "approved":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500 text-white";
       case "rejected":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500 text-white";
+      case "pending":
+        return "bg-yellow-500 text-white";
       default:
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-gray-500 text-white";
+    }
+  };
+
+  // Get status display text
+  const getStatusText = (status) => {
+    switch (status.toLowerCase()) {
+      case "approved":
+        return "✓ Approved";
+      case "rejected":
+        return "✗ Rejected";
+      case "pending":
+        return "⏳ Pending";
+      default:
+        return status;
     }
   };
 
@@ -217,6 +236,12 @@ const TimeOffPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
+              <img
+                src="/logo (2).png"
+                alt="DayFlow Logo"
+                className="h-10 w-auto cursor-pointer"
+                onClick={() => navigate("/admin/dashboard")}
+              />
               <button
                 onClick={() => navigate(-1)}
                 className="text-gray-600 hover:text-gray-800"
@@ -232,6 +257,30 @@ const TimeOffPage = () => {
                 )}
               </h1>
             </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/employees")}
+                className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors"
+              >
+                Employees
+              </button>
+              <button
+                onClick={() => navigate("/attendance")}
+                className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+              >
+                Attendance
+              </button>
+              {!isAdmin && (
+                <button
+                  onClick={() => setShowNewLeaveModal(true)}
+                  className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-semibold"
+                >
+                  + Request Time Off
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -240,36 +289,8 @@ const TimeOffPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Controls Panel */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            {/* Left side - Tabs */}
-            <div className="flex items-center gap-2">
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
-                Company Logo
-              </button>
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
-                Employees
-              </button>
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
-                Attendance
-              </button>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md">
-                Time Off
-              </button>
-            </div>
-
-            {/* Right side - Settings icons */}
-            <div className="flex items-center gap-3">
-              <button className="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600">
-                🔴
-              </button>
-              <button className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600">
-                ⚙️
-              </button>
-            </div>
-          </div>
-
           {/* Controls Row */}
-          <div className="mt-6 flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             {/* NEW badge and Time Off label */}
             <div className="flex items-center gap-2">
               {!isAdmin && (
@@ -413,7 +434,7 @@ const TimeOffPage = () => {
                             leave.status
                           )}`}
                         >
-                          {leave.status.toUpperCase()}
+                          {getStatusText(leave.status)}
                         </span>
                       </td>
                       {isAdmin && (
@@ -422,24 +443,30 @@ const TimeOffPage = () => {
                             <div className="flex justify-center gap-2">
                               <button
                                 onClick={() => handleReject(leave._id)}
-                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded text-sm font-medium flex items-center gap-1"
                                 title="Reject"
                               >
-                                ❌
+                                ✗ Reject
                               </button>
                               <button
                                 onClick={() => handleApprove(leave._id)}
-                                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium flex items-center gap-1"
                                 title="Approve"
                               >
-                                ✓
+                                ✓ Approve
                               </button>
                             </div>
                           ) : (
-                            <span className="text-gray-400 text-sm">
+                            <span
+                              className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${
+                                leave.status === "approved"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
                               {leave.status === "approved"
-                                ? "Approved"
-                                : "Rejected"}
+                                ? "✓ Approved"
+                                : "✗ Rejected"}
                             </span>
                           )}
                         </td>
@@ -505,8 +532,8 @@ const TimeOffPage = () => {
                         <input
                           type="radio"
                           name="leaveType"
-                          value="Sick Leave"
-                          checked={newLeave.leaveType === "Sick Leave"}
+                          value="Sick Time Off"
+                          checked={newLeave.leaveType === "Sick Time Off"}
                           onChange={handleInputChange}
                           className="text-purple-600"
                         />
@@ -516,8 +543,8 @@ const TimeOffPage = () => {
                         <input
                           type="radio"
                           name="leaveType"
-                          value="Unpaid Leaves"
-                          checked={newLeave.leaveType === "Unpaid Leaves"}
+                          value="Unpaid Leave"
+                          checked={newLeave.leaveType === "Unpaid Leave"}
                           onChange={handleInputChange}
                           className="text-purple-600"
                         />
