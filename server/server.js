@@ -5,6 +5,7 @@ const connectDB = require("./src/config/db");
 const authRoutes = require("./src/routes/authRoutes");
 const employeeRoutes = require("./src/routes/employeeRoutes");
 const attendanceRoutes = require("./src/routes/attendanceRoutes");
+const leaveRoutes = require("./src/routes/leaveRoutes");
 
 // Initialize express app
 const app = express();
@@ -24,6 +25,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/leaves", leaveRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {

@@ -29,6 +29,12 @@ const EmployeeDashboard = () => {
               My Attendance
             </button>
             <button
+              onClick={() => navigate("/timeoff")}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+            >
+              Time Off
+            </button>
+            <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
             >
@@ -61,9 +67,12 @@ const EmployeeDashboard = () => {
             <p className="text-gray-600">Check-in/Check-out & View History</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <h3 className="text-xl font-semibold mb-2">🏖️ Leave Requests</h3>
-            <p className="text-gray-600">Apply for leave</p>
+          <div
+            onClick={() => navigate("/timeoff")}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <h3 className="text-xl font-semibold mb-2">🏖️ Time Off</h3>
+            <p className="text-gray-600">Request and view time off</p>
           </div>
         </div>
       </div>

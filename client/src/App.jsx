@@ -11,6 +11,7 @@ import AdminDashboard from "./components/Dashboard/AdminDashboard";
 import EmployeesPage from "./components/Dashboard/EmployeesPage";
 import EmployeeProfile from "./components/Dashboard/EmployeeProfile";
 import AttendancePage from "./components/Dashboard/AttendancePage";
+import TimeOffPage from "./components/Dashboard/TimeOffPage";
 import ProtectedRoute from "./utils/ProtectedRoute";
 
 function App() {
@@ -71,6 +72,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["employee", "admin", "hr"]}>
               <AttendancePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/timeoff"
+          element={
+            <ProtectedRoute allowedRoles={["employee", "admin", "hr"]}>
+              <TimeOffPage />
             </ProtectedRoute>
           }
         />

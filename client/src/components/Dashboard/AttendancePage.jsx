@@ -14,6 +14,15 @@ const AttendancePage = () => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("date"); // 'date' or 'day'
+  const [monthYear, setMonthYear] = useState({
+    month: new Date().getMonth(), // 0-11
+    year: new Date().getFullYear(),
+  });
+  const [statistics, setStatistics] = useState({
+    daysPresent: 0,
+    leavesCount: 0,
+    totalWorkingDays: 0,
+  });
 
   // Fetch attendance data
   const fetchAttendanceData = async () => {
@@ -28,17 +37,39 @@ const AttendancePage = () => {
 
       let response;
       if (isAdmin) {
-        // Admin can see all employees' attendance
+        // Admin can see all employees' attendance for selected date
         response = await axios.get(
           `http://localhost:5000/api/attendance/all?date=${selectedDate}`,
           config
         );
       } else {
-        // Regular employees see their own attendance
+        // Regular employees see their own attendance for the selected month
+        const startDate = new Date(monthYear.year, monthYear.month, 1)
+          .toISOString()
+          .split("T")[0];
+        const endDate = new Date(monthYear.year, monthYear.month + 1, 0)
+          .toISOString()
+          .split("T")[0];
+
         response = await axios.get(
-          `http://localhost:5000/api/attendance/history?startDate=${selectedDate}&endDate=${selectedDate}`,
+          `http://localhost:5000/api/attendance/history?startDate=${startDate}&endDate=${endDate}&limit=100`,
           config
         );
+
+        // Calculate statistics for employee view
+        const records = response.data.attendance || [];
+        const daysPresent = records.filter((r) => r.checkInTime).length;
+        const totalDays = new Date(
+          monthYear.year,
+          monthYear.month + 1,
+          0
+        ).getDate();
+
+        setStatistics({
+          daysPresent,
+          leavesCount: 0, // TODO: Fetch from leave system
+          totalWorkingDays: totalDays,
+        });
       }
 
       setAttendanceData(response.data.attendance || []);
@@ -55,7 +86,7 @@ const AttendancePage = () => {
 
   useEffect(() => {
     fetchAttendanceData();
-  }, [selectedDate]);
+  }, [selectedDate, monthYear]);
 
   // Calculate work hours
   const calculateWorkHours = (checkIn, checkOut) => {
@@ -117,6 +148,43 @@ const AttendancePage = () => {
     const date = new Date(selectedDate);
     date.setDate(date.getDate() + 1);
     setSelectedDate(date.toISOString().split("T")[0]);
+  };
+
+  // Navigate to previous month
+  const previousMonth = () => {
+    setMonthYear((prev) => {
+      const newMonth = prev.month === 0 ? 11 : prev.month - 1;
+      const newYear = prev.month === 0 ? prev.year - 1 : prev.year;
+      return { month: newMonth, year: newYear };
+    });
+  };
+
+  // Navigate to next month
+  const nextMonth = () => {
+    setMonthYear((prev) => {
+      const newMonth = prev.month === 11 ? 0 : prev.month + 1;
+      const newYear = prev.month === 11 ? prev.year + 1 : prev.year;
+      return { month: newMonth, year: newYear };
+    });
+  };
+
+  // Get month name
+  const getMonthName = () => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return `${monthNames[monthYear.month]} ${monthYear.year}`;
   };
 
   // Filter data based on search
@@ -222,65 +290,103 @@ const AttendancePage = () => {
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
               <label className="text-gray-700 font-medium">Attendance</label>
-              <input
-                type="text"
-                placeholder="Searchbar"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-              />
+              {!isAdmin && (
+                <input
+                  type="text"
+                  placeholder="Searchbar"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                />
+              )}
             </div>
 
             <div className="flex items-center gap-2">
               <button
-                onClick={previousDay}
+                onClick={isAdmin ? previousDay : previousMonth}
                 className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
                 &lt;-
               </button>
               <button
-                onClick={nextDay}
+                onClick={isAdmin ? nextDay : nextMonth}
                 className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
                 -&gt;
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setViewMode("date")}
-                className={`px-4 py-2 rounded-md ${
-                  viewMode === "date"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-              >
-                Date ▼
-              </button>
-              <button
-                onClick={() => setViewMode("day")}
-                className={`px-4 py-2 rounded-md ${
-                  viewMode === "day"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-              >
-                Day
-              </button>
-            </div>
+            {isAdmin && (
+              <>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setViewMode("date")}
+                    className={`px-4 py-2 rounded-md ${
+                      viewMode === "date"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    Date ▼
+                  </button>
+                  <button
+                    onClick={() => setViewMode("day")}
+                    className={`px-4 py-2 rounded-md ${
+                      viewMode === "day"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    Day
+                  </button>
+                </div>
 
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </>
+            )}
+
+            {!isAdmin && (
+              <>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                  Oct ▼
+                </button>
+                <div className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
+                  <span className="text-sm text-gray-600 mr-2">
+                    Count of days present:
+                  </span>
+                  <span className="font-semibold text-gray-900">
+                    {statistics.daysPresent}
+                  </span>
+                </div>
+                <div className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
+                  <span className="text-sm text-gray-600 mr-2">
+                    Leaves count:
+                  </span>
+                  <span className="font-semibold text-gray-900">
+                    {statistics.leavesCount}
+                  </span>
+                </div>
+                <div className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
+                  <span className="text-sm text-gray-600 mr-2">
+                    Total working days:
+                  </span>
+                  <span className="font-semibold text-gray-900">
+                    {statistics.totalWorkingDays}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Selected Date Display */}
           <div className="mt-4 text-center">
             <p className="text-lg font-semibold text-gray-800">
-              {formatDisplayDate(selectedDate)}
+              {isAdmin ? formatDisplayDate(selectedDate) : getMonthName()}
             </p>
           </div>
         </div>
@@ -295,12 +401,14 @@ const AttendancePage = () => {
           ) : filteredData.length === 0 ? (
             <div className="p-12 text-center">
               <p className="text-gray-500 text-lg">
-                No attendance records found for this date
+                {isAdmin
+                  ? "No attendance records found for this date"
+                  : "No attendance records found for this month"}
               </p>
               <p className="text-gray-400 mt-2">
                 {isAdmin
                   ? "No employees have checked in yet today"
-                  : "You have not marked attendance for this day"}
+                  : "You have not marked attendance this month"}
               </p>
             </div>
           ) : (
@@ -309,7 +417,7 @@ const AttendancePage = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Emp
+                      {isAdmin ? "Emp" : "Date"}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Check In
@@ -332,18 +440,24 @@ const AttendancePage = () => {
                       className="hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
+                        {isAdmin ? (
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {record.employee?.name || "Unknown"}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {record.employee?.employeeId || "N/A"}
+                            </div>
+                          </div>
+                        ) : (
                           <div className="text-sm font-medium text-gray-900">
-                            {isAdmin
-                              ? record.employee?.name || "Unknown"
-                              : currentUser.name}
+                            {new Date(record.date).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
                           </div>
-                          <div className="text-sm text-gray-500">
-                            {isAdmin
-                              ? record.employee?.employeeId || "N/A"
-                              : currentUser.employeeId}
-                          </div>
-                        </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
